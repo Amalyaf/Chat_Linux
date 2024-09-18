@@ -3,11 +3,11 @@
 #include "Users.h"
 #include "Message.h"
 
-constexpr auto userData = "/home/amalya/NewProject/userData.txt";	// файл для хранения данных пользователей 
-constexpr auto user_count = "/home/amalya/NewProject/user_count.txt";	// файл для хранения кол-ва зарегистрированных пользователей
-constexpr auto user_private_message = "/home/amalya/NewProject/user_private_message.txt";	// файл для хранения непросмотренных личных сообщений
-constexpr auto user_public_message = "/home/amalya/NewProject/user_public_message.txt";	// файл для хранения непрочитанных общих сообщений
-constexpr auto prvt_msg_count = "/home/amalya/NewProject/private_message_count.txt";   // файл для хранения кол-ва личных непрочитанных сообщений
+constexpr auto userData = "/home/amalya/Chat_Linux/userData.txt";	// файл для хранения данных пользователей 
+constexpr auto user_count = "/home/amalya/Chat_Linux/user_count.txt";	// файл для хранения кол-ва зарегистрированных пользователей
+constexpr auto user_private_message = "/home/amalya/Chat_Linux/user_private_message.txt";	// файл для хранения непросмотренных личных сообщений
+constexpr auto user_public_message = "/home/amalya/Chat_Linux/user_public_message.txt";	// файл для хранения непрочитанных общих сообщений
+constexpr auto prvt_msg_count = "/home/amalya/Chat_Linux/private_message_count.txt";   // файл для хранения кол-ва личных непрочитанных сообщений
 
 
 
@@ -42,4 +42,5 @@ public:
 	void deletePrivateMessage(std::string recipient); // перемещение прочитанных личных сообщений в viewedMessage и их удаление из allMessage
 	void deletePublicMessage(std::string recipient); // удаление прочитанных общих сообщений из allPublicMessage
 	void printAllMessage(); // вывод на экран всех просмотренных личных сообщений
+	void start(); // начало работы программы
 };

@@ -430,4 +430,69 @@ void Chat::readMessage() {
         }
 }
 
+void Chat::start() {
 
+ char c = 'y'; // условие выхода из цикла
+
+
+
+        if (getReadUsersStatus() == -1) {
+                while (c == 'y')
+                {
+                        registration();
+                        cout << "\nХотите зарегистрировать ещё одного пользователя?" << endl;
+                        cin >> c;
+                        cout << endl;
+                }
+        }
+        getChat();
+        enter(); // авторизация
+        c = 'y';
+        while (c != 'n')
+        {
+                if (getstatus()) // проверяем был ли выполнен вход
+                {
+                        char message;
+                        cout << "\nХотите отправить сообщение?(y/n)\n";
+                        cin >> c;
+
+                        if (c == 'y')
+                        {
+                                cout << "\nВыберите тип отправляемого сообщения: 1-private, 2-public\n";
+                                cin >> message;
+                                switch (message)
+                                {
+                                case '1':
+                                        sendPrivateMessage();
+                                        break;
+                                case '2':
+                                        sendPublicMessage();
+                                        break;
+                                default:
+                                        cout << "\nНекорректный ввод!\n";
+                                        break;
+                                }
+                        }
+                        if (c == 'n')
+                        {
+                                cout << "\nХотите выполнить вход под другой учетной записью?(y/n)\n";
+                                cin >> c;
+                                if (c == 'y')
+                                {
+                                        exit();
+                                        enter();
+                                }
+                                else
+                                {
+                                        break;
+                                }
+                        }
+                }
+                else
+                {
+                        c = 'n';
+                        cout << "Вход не выполнен!\n";
+                }
+        }
+        printAllMessage();
+}
