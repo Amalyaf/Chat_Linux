@@ -85,7 +85,7 @@ void Chat::registration()
 	char c = 'y';
 		while (c != 'n')
 		{
-			cout << "Регистрация нового пользователя\n";
+			cout << "\nРегистрация нового пользователя\n";
 			Users user;
 			user.setUser();
 			vector<Users>::iterator result = find(allUsers.begin(), allUsers.end(), user);
@@ -434,17 +434,20 @@ void Chat::start() {
 
  char c = 'y'; // условие выхода из цикла
 
+	 if (getReadUsersStatus() == 1) { // если есть файл с данными о ранее зарегистрированных пользователях,
+					 // то сначала спрашиваем о регистрации нового пользователя и в зависимости от ответа выполняем регистрацию
+		getChat(); // делаю вывод пользователей на экран, чтобы было видно логины и пароли 
+		cout << "\nХотите зарегистрировать ещё одного пользователя?(y/n)" << endl;
+		cin >> c;
+	}
+	while (c == 'y') {
+		registration();
+		cout << "\nХотите зарегистрировать ещё одного пользователя?(y/n)" << endl;
+		cin >> c;
+		cout << endl;
+	}
 
 
-        if (getReadUsersStatus() == -1) {
-                while (c == 'y')
-                {
-                        registration();
-                        cout << "\nХотите зарегистрировать ещё одного пользователя?(y/n)" << endl;
-                        cin >> c;
-                        cout << endl;
-                }
-        }
         getChat();
         enter(); // авторизация
         c = 'y';
