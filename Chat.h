@@ -3,12 +3,12 @@
 #include "Users.h"
 #include "Message.h"
 
-constexpr auto userData = "/home/amalya/Chat_Linux/userData.txt";	// файл для хранения данных пользователей 
-constexpr auto user_count = "/home/amalya/Chat_Linux/user_count.txt";	// файл для хранения кол-ва зарегистрированных пользователей
-constexpr auto user_private_message = "/home/amalya/Chat_Linux/user_private_message.txt";	// файл для хранения непросмотренных личных сообщений
-constexpr auto user_public_message = "/home/amalya/Chat_Linux/user_public_message.txt";	// файл для хранения непрочитанных общих сообщений
-constexpr auto prvt_msg_count = "/home/amalya/Chat_Linux/private_message_count.txt";   // файл для хранения кол-ва личных непрочитанных сообщений
-
+constexpr auto userData = "/tmp/Data/userData.txt";	// файл для хранения данных пользователей 
+constexpr auto user_count = "/tmp/Data/user_count.txt";	// файл для хранения кол-ва зарегистрированных пользователей
+constexpr auto private_message = "/tmp/Data/private_message.txt";	// файл для хранения непросмотренных личных сообщений
+constexpr auto public_message = "/tmp/Data/public_message.txt";	// файл для хранения непрочитанных общих сообщений
+constexpr auto prvt_msg_count = "/tmp/Data/private_message_count.txt";   // файл для хранения кол-ва личных непрочитанных сообщений
+constexpr auto pblc_msg_count = "/tmp/Data/public_message_count.txt";   // файл для хранения кол-ва общих непрочитанных сообщений
 
 
 class Chat
@@ -26,11 +26,12 @@ private:
 public:
 	Chat(); // конструктор
 	~Chat(); // деструктор
-	void writeUsers() const;
-	void writeMessage() const;
-	void readUsers();
-	void readMessage();
-	int getReadUsersStatus();
+	void writeUsers() const; // метод для записи данных о пользователях в файл
+	void writeMessage() const; // метод для записи данных о сообщениях в файл
+	void readUsers(); // метод для чтения данных о пользователях из файла
+	void readPrivateMessage(); // метод для чтения личных сообщений из файла
+	void readPublicMessage(); // метод для чтения общих сообщений из файла			   
+	int getReadUsersStatus(); // метод выводит 1, если есть файл userData, иначе -1
 	void getChat(); // метод выводит данные пользователя
 	void enter(); // авторизация пользователя
 	void registration(); //  регистрация пользователя

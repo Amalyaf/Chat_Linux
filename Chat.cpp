@@ -7,19 +7,22 @@
 #include <cstdlib>
 
 using namespace std;
+
 Chat::Chat()
 {
-	vector<Users>allUsers;
-	
-	if (getReadUsersStatus() == 1) {
-		readUsers();}
+	vector<Users> allUsers;
 
-	readMessage();
+	// если есть файл с данными ранее зарегистрированных пользователей, то вызвать методы для считывания данных из файлов
+	if (getReadUsersStatus() == 1) {
+		readUsers();
+		readPrivateMessage();
+		readPublicMessage();
+	}
 }
 
 Chat::~Chat() {
-	writeUsers();
-	writeMessage();
+	writeUsers(); // метод для записи данных зарегистрированных пользователей в файл
+	writeMessage(); // метод для записи личных и публичных сообщений в отдельные файлы
 }
 
 
@@ -52,8 +55,8 @@ void Chat::enter()
 			else
 			{
 				user = *result;
-				std::cout << "Введите пароль: \n";
-				std::cin >> _password;
+				cout << "Введите пароль: \n";
+				cin >> _password;
 				
 				if (user._password != _password)
 				{
@@ -69,13 +72,13 @@ void Chat::enter()
 		}
 		catch (BadLogin& e)
 		{
-			std::cout << e.what() << std::endl;
-			std::cin >> c;
+			cout << e.what() << endl;
+			cin >> c;
 		}
 		catch (BadPassword& e)
 		{
-			std::cout << e.what() << std::endl;
-			std::cin >> c;
+			cout << e.what() << endl;
+			cin >> c;
 		}
 	}
 }
@@ -109,7 +112,7 @@ void Chat::sendPrivateMessage()
 	_sender = _login;
 	while (c != 'n')
 	{
-		std::cout << "Кому: ";
+		cout << "Кому: ";
 		cin >> _recipient;
 		Users user;
 		user._login = _recipient;
@@ -125,7 +128,7 @@ void Chat::sendPrivateMessage()
 			Message message;
 			message._recipient = _recipient;
 			message._sender = _sender;
-			std::cout << "Введите сообщение:\n";
+			cout << "\nВведите сообщение:\n";
 			message.setMessage();
 			allMessage.push_back(message);
 			c = 'n';
@@ -137,7 +140,7 @@ void Chat::sendPublicMessage()
 {
 	Message message;
 	message._sender = _login;
-	std::cout << "Введите групповое сообщение:\n";
+	cout << "\nВведите групповое сообщение:\n";
 	message.setMessage();
 	for (vector<Users>::iterator it = allUsers.begin(); it < allUsers.end(); it++)
 	{
@@ -163,17 +166,17 @@ void Chat::printMessage(string recipient)
 			count++;
 			if (count == 1)
 			{
-				std::cout << "\n------------------------------------------------------\n";
-				std::cout << "У вас есть новые личные сообщения" << ": ";
+				cout << "\n------------------------------------------------------\n";
+				cout << "У вас есть новые личные сообщения" << ": ";
 			}
 			cout << "\nОтправитель: " << it->_sender << endl <<
 				"Получатель: " << it->_recipient << endl <<
 				"Сообщение: " << it->_message << endl;
 		}
 	}
-	if (count!=0)
+	if (count != 0)
 	{
-		std::cout << "\n------------------------------------------------------\n";
+		cout << "\n------------------------------------------------------\n";
 		deletePrivateMessage(recipient);
 	}
 	count = 0;
@@ -191,9 +194,9 @@ void Chat::printMessage(string recipient)
 				"Сообщение: " << it->_message << endl;
 		}
 	}
-	if (count!=0)
+	if (count != 0)
 	{
-		std::cout << "\n------------------------------------------------------\n";
+		cout << "\n------------------------------------------------------\n";
 		deletePublicMessage(recipient);
 	}
 }
@@ -249,32 +252,33 @@ void Chat::exit()
 }
 
 void Chat::readUsers() {
-        std::fstream file = std::fstream(userData, std::ios::in);
+        
+	fstream file = fstream(userData, ios::in);
 
         if (!file)
         {
-                std::cout<<"No file"<< std::endl;
+                cout << "No file" << endl;
                 return;
         }
       	
-        const std::string delimiter = ":";
+        const string delimiter = ":";
         
 	if (file.is_open()) {
-		std::string line;
-		std::string title;
-                std::string value;
+		string line;
+		string title;
+                string value;
 		int user_cnt = 0;
 
-		std::fstream user_cnt_file (user_count, std::ios::in);
+		fstream user_cnt_file (user_count, ios::in);
 		if (user_cnt_file.is_open()) {
-			std::string line;
+			string line;
 			getline(user_cnt_file, line);
 			user_cnt = stoi(line);
 		}
 		for (int i = 0; i < user_cnt; i++) {
 			Users user;
 			int count = 0;
-        	while (count < 3 && std::getline(file, line)) {
+        	while (count < 3 && getline(file, line)) {
 				size_t delimiterPosition = line.find(delimiter);
                 		if (delimiterPosition > 0) {
                        			title = line.substr (0, delimiterPosition);
@@ -299,18 +303,19 @@ void Chat::readUsers() {
 }
 
 int Chat::getReadUsersStatus() {
-	std::fstream file (userData, std::ios::in);
+	
+	fstream file (userData, ios::in);
 	if (!file) {
         	return -1;
 	}
 	
-	std::fstream user_cnt_file (user_count, std::ios::in);
+	fstream user_cnt_file (user_count, ios::in);
 	if (!user_cnt_file) {
 		return -1;
 	}
 
 	else if (user_cnt_file.is_open()) {
-		std::string line;
+		string line;
 		int user_cnt = 0;
                 getline(user_cnt_file, line);
                 user_cnt = stoi(line);
@@ -326,8 +331,8 @@ void Chat::writeUsers() const {
 
 	fstream file = fstream(userData, ios::in | ios::out | ios::trunc);
 
-        auto permissions = std::filesystem::perms::group_all | std::filesystem::perms::others_all; // права, которые хотим отобрать
-        std::filesystem::permissions (userData, permissions, std::filesystem::perm_options::remove);
+        auto permissions = filesystem::perms::group_all | filesystem::perms::others_all; // права, которые хотим отобрать
+        filesystem::permissions (userData, permissions, filesystem::perm_options::remove);
 
 	for (int i = 0; i < allUsers.size(); i++)
         {
@@ -339,7 +344,7 @@ void Chat::writeUsers() const {
         file.close();
 	
 	fstream user_cnt_file = fstream(user_count, ios::in | ios::out | ios::trunc);
-        std::filesystem::permissions (user_count, permissions, std::filesystem::perm_options::remove);
+        filesystem::permissions (user_count, permissions, filesystem::perm_options::remove);
 
 	user_cnt_file << allUsers.size();
 	user_cnt_file.close();
@@ -347,10 +352,10 @@ void Chat::writeUsers() const {
 
 void Chat::writeMessage() const {
 	
-	fstream file_prvt_msg = fstream(user_private_message, ios::in | ios::out | ios::trunc);
+	fstream file_prvt_msg = fstream(private_message, ios::in | ios::out | ios::trunc);
 	
-	auto permissions = std::filesystem::perms::group_all | std::filesystem::perms::others_all; // права, которые хотим отобрать
-	std::filesystem::permissions (user_private_message, permissions, std::filesystem::perm_options::remove);
+	auto permissions = filesystem::perms::group_all | filesystem::perms::others_all; // права, которые хотим отобрать
+	filesystem::permissions (private_message, permissions, filesystem::perm_options::remove);
 
 	for (int i = 0; i < allMessage.size(); i++) {
 		file_prvt_msg << "Recipient:" << allMessage[i]._recipient << "\n";
@@ -360,12 +365,12 @@ void Chat::writeMessage() const {
 	file_prvt_msg.close();
 
 
-	fstream file_pblc_msg = fstream(user_public_message, ios::in | ios::out | ios::trunc);
-	std::filesystem::permissions (user_public_message, permissions, std::filesystem::perm_options::remove);
+	fstream file_pblc_msg = fstream(public_message, ios::in | ios::out | ios::trunc);
+	filesystem::permissions (public_message, permissions, filesystem::perm_options::remove);
 	
 	for (int i = 0; i < allPublicMessage.size(); i++) {
 		
-		file_pblc_msg << "Pecipient:" << allPublicMessage[i]._recipient << "\n";
+		file_pblc_msg << "Recipient:" << allPublicMessage[i]._recipient << "\n";
                 file_pblc_msg << "Sender:" << allPublicMessage[i]._sender << "\n";
                 file_pblc_msg << "Message:" << allPublicMessage[i]._message << "\n";
 	}
@@ -373,40 +378,46 @@ void Chat::writeMessage() const {
 	file_pblc_msg.close();
 
 	fstream prvt_msg_cnt_file = fstream(prvt_msg_count, ios::in | ios::out | ios::trunc);
-	std::filesystem::permissions (prvt_msg_count, permissions, std::filesystem::perm_options::remove);
+	filesystem::permissions (prvt_msg_count, permissions, filesystem::perm_options::remove);
 
         prvt_msg_cnt_file << allMessage.size();
         prvt_msg_cnt_file.close();
+
+	fstream pblc_msg_cnt_file = fstream(pblc_msg_count, ios::in | ios::out | ios::trunc);
+        filesystem::permissions (pblc_msg_count, permissions, filesystem::perm_options::remove);
+
+        pblc_msg_cnt_file << allPublicMessage.size();
+        pblc_msg_cnt_file.close();	
 }
 
-void Chat::readMessage() {
+void Chat::readPrivateMessage() {
         
-	std::fstream file = std::fstream(user_private_message, std::ios::in);
+	fstream file = fstream(private_message, ios::in);
 
         if (!file)
         {
-                std::cout<<"No file"<< std::endl;
+                cout << "No file" << endl;
                 return;
         }
         
-	const std::string delimiter = ":";
+	const string delimiter = ":";
         
 	if (file.is_open()) {
-                std::string line;
-                std::string title;
-                std::string value;
+                string line;
+                string title;
+                string value;
                 int prvt_msg_cnt = 0;
 
-                std::fstream prvt_msg_cnt_file (prvt_msg_count, std::ios::in);
+                fstream prvt_msg_cnt_file (prvt_msg_count, ios::in);
                 if (prvt_msg_cnt_file.is_open()) {
-                        std::string line;
+                        string line;
                         getline(prvt_msg_cnt_file, line);
                         prvt_msg_cnt = stoi(line);
                 }
                 for (int i = 0; i < prvt_msg_cnt; i++) {
                         Message msg;
                         int count = 0;
-                while (count < 3 && std::getline(file, line)) {
+                while (count < 3 && getline(file, line)) {
                                 size_t delimiterPosition = line.find(delimiter);
                                 if (delimiterPosition > 0) {
                                         title = line.substr (0, delimiterPosition);
@@ -430,13 +441,66 @@ void Chat::readMessage() {
         }
 }
 
+
+void Chat::readPublicMessage() {
+
+        fstream file = fstream(public_message, ios::in);
+
+        if (!file)
+        {
+                cout << "No file" << endl;
+                return;
+        }
+
+        const string delimiter = ":";
+
+        if (file.is_open()) {
+                string line;
+                string title;
+                string value;
+                int pblc_msg_cnt = 0;
+
+                fstream pblc_msg_cnt_file (pblc_msg_count, ios::in);
+                if (pblc_msg_cnt_file.is_open()) {
+                        string line;
+                        getline(pblc_msg_cnt_file, line);
+                        pblc_msg_cnt = stoi(line);
+                }
+                for (int i = 0; i < pblc_msg_cnt; i++) {
+                        Message msg;
+                        int count = 0;
+                while (count < 3 && getline(file, line)) {
+                                size_t delimiterPosition = line.find(delimiter);
+                                if (delimiterPosition > 0) {
+                                        title = line.substr (0, delimiterPosition);
+                                        value = line.substr (delimiterPosition + 1);
+
+                                        if (title == "Recipient") {
+                                                msg._recipient = value;
+                                        }
+                                        else if (title == "Sender") {
+                                                msg._sender = value;
+                                        }
+                                        else if (title == "Message") {
+                                                msg._message = value;
+                                        }
+                                       count++;
+                                }
+                        }
+                        allPublicMessage.push_back(msg);
+                }
+                file.close();
+        }
+}
+
+
 void Chat::start() {
 
  char c = 'y'; // условие выхода из цикла
 
 	 if (getReadUsersStatus() == 1) { // если есть файл с данными о ранее зарегистрированных пользователях,
 					 // то сначала спрашиваем о регистрации нового пользователя и в зависимости от ответа выполняем регистрацию
-		getChat(); // делаю вывод пользователей на экран, чтобы было видно логины и пароли 
+		getChat(); // вывод пользователей на экран, чтобы было видно логины и пароли 
 		cout << "\nХотите зарегистрировать ещё одного пользователя?(y/n)" << endl;
 		cin >> c;
 	}
@@ -446,7 +510,6 @@ void Chat::start() {
 		cin >> c;
 		cout << endl;
 	}
-
 
         getChat();
         enter(); // авторизация
@@ -497,5 +560,4 @@ void Chat::start() {
                         cout << "\nВход не выполнен!\n";
                 }
         }
-        printAllMessage();
 }
