@@ -91,7 +91,7 @@ void Chat::registration()
 			vector<Users>::iterator result = find(allUsers.begin(), allUsers.end(), user);
 			if (result != allUsers.end())
 			{
-				cout << "\nПользователь с таким логином уже существует!\nХотите повторить попытку?(y/n)\n";
+				cout << "\nПользователь с таким логином уже существует!\nХотите повторить попытку?(y/n)";
 				cin >> c;
 				cout << endl;
 			}
@@ -116,7 +116,7 @@ void Chat::sendPrivateMessage()
 		vector<Users>::iterator result = find(allUsers.begin(), allUsers.end(), user);
 		if (result == allUsers.end())
 		{
-			cout << "Получатель не найден!\nХотите повторить попытку?(y/n)";
+			cout << "\nПолучатель не найден!\nХотите повторить попытку?(y/n)";
 			cin >> c;
 		}
 
@@ -440,7 +440,7 @@ void Chat::start() {
                 while (c == 'y')
                 {
                         registration();
-                        cout << "\nХотите зарегистрировать ещё одного пользователя?" << endl;
+                        cout << "\nХотите зарегистрировать ещё одного пользователя?(y/n)" << endl;
                         cin >> c;
                         cout << endl;
                 }
@@ -491,7 +491,7 @@ void Chat::start() {
                 else
                 {
                         c = 'n';
-                        cout << "Вход не выполнен!\n";
+                        cout << "\nВход не выполнен!\n";
                 }
         }
         printAllMessage();
