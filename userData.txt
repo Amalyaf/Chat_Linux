@@ -1,9 +1,0 @@
-Name:Amalya
-Login:amalya
-Password:amalya123
-Name:Akif
-Login:akif
-Password:akif123
-Name:arasta
-Login:Arasta
-Password:arasta123
