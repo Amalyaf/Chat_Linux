@@ -1,7 +1,7 @@
 TARGET = main
 SRC = main.cpp
 LIB = Chat
-PREFIX = /usr/local/bin
+PREFIX = /tmp/Data
 
 main: $(SRC) lib
 	g++ -o $(TARGET) $(SRC) -L. -l$(LIB)
@@ -13,3 +13,5 @@ lib: $(LIB).cpp $(LIB).h
 	ar rc lib$(LIB).a $(LIB).o Users.o bad_login.o bad_password.o
 clean:
 	rm *.o *.a
+create:
+	mkdir $(PREFIX) 
